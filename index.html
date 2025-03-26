@@ -1,54 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Blocking Resource Test</title>
+    <title>Connection Refused Error Test</title>
+    <meta charset="UTF-8">
     <style>
         body {
             font-family: Arial, sans-serif;
-            visibility: hidden;
+            margin: 20px;
+            line-height: 1.6;
         }
-        #loading {
-            visibility: visible;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f8f8f8;
+        }
+        h1 {
+            color: #333;
         }
     </style>
-    <script src="https://nonexistent-domain-12345xyz.com/critical-script.js"></script>
+    <script src="http://localhost:59999/script-that-will-fail.js"></script>
 </head>
 <body>
-    <div id="loading">
-        <h2>Loading required resources...</h2>
-        <p>This page is waiting for a critical resource to load.</p>
-    </div>
-
-    <div id="content">
-        <h1>Main Content</h1>
-        <p>This content should be hidden until the resource loads (which it won't).</p>
-    </div>
+    <h1>WebView Connection Refused Test</h1>
+    <p>This page attempts to load a script from a localhost port that will cause a connection refused error.</p>
+    
+    <div class="status" id="status">Loading resources...</div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM content loaded');
+        window.addEventListener('error', function(e) {
+            if (e.target && e.target.tagName === 'SCRIPT') {
+                console.error(`Failed to load script: ${e.target.src}`);
+                document.getElementById('status').innerHTML = 
+                    `<strong>Error detected:</strong> Failed to load script from ${e.target.src}<br>
+                     This should trigger a connection refused error as port 59999 is typically unused.`;
+                document.getElementById('status').style.color = 'red';
+            }
+        }, true);
 
-            const errorMessage = document.createElement('div');
-            errorMessage.style.color = 'red';
-            errorMessage.style.padding = '20px';
-            errorMessage.style.margin = '20px';
-            errorMessage.style.border = '1px solid red';
-            errorMessage.innerHTML = 'ERROR: Page loaded despite blocking script failure';
-            document.body.insertBefore(errorMessage, document.body.firstChild);
-            
-            document.body.style.visibility = 'visible';
-            document.getElementById('loading').style.display = 'none';
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM content loaded, but script loading should have failed');
         });
     </script>
 </body>
