@@ -1,7 +1,55 @@
 <!DOCTYPE html>
 <html>
-    <body>
-      <h1>Testing Resource Error</h1>
-      <script src="https://nonexistentdomain12345xyz.com/script.js"></script>
-    </body>
+<head>
+    <title>Blocking Resource Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            visibility: hidden;
+        }
+        #loading {
+            visibility: visible;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+    </style>
+    <script src="https://nonexistent-domain-12345xyz.com/critical-script.js"></script>
+</head>
+<body>
+    <div id="loading">
+        <h2>Loading required resources...</h2>
+        <p>This page is waiting for a critical resource to load.</p>
+    </div>
+
+    <div id="content">
+        <h1>Main Content</h1>
+        <p>This content should be hidden until the resource loads (which it won't).</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM content loaded');
+
+            const errorMessage = document.createElement('div');
+            errorMessage.style.color = 'red';
+            errorMessage.style.padding = '20px';
+            errorMessage.style.margin = '20px';
+            errorMessage.style.border = '1px solid red';
+            errorMessage.innerHTML = 'ERROR: Page loaded despite blocking script failure';
+            document.body.insertBefore(errorMessage, document.body.firstChild);
+            
+            document.body.style.visibility = 'visible';
+            document.getElementById('loading').style.display = 'none';
+        });
+    </script>
+</body>
 </html>
